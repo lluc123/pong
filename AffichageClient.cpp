@@ -72,6 +72,7 @@ void initialisationParametres(SDL_Surface *image, SDL_Surface *ecran)
 //Fais la gestion des différents évènements relié au mouvement de souris ou bien encore en appuyant sur les flèches
 void gestionEvenements(SDL_Surface *image, SDL_Surface *ecran, int &mySocket)
 {
+	int direction;
 	bool continuer = true;
 	SDL_Event event;
 	int posPlaque;
@@ -102,12 +103,12 @@ void gestionEvenements(SDL_Surface *image, SDL_Surface *ecran, int &mySocket)
 					continuer = 0;
 					break;
 				case SDLK_UP:
-					/*posPlaque -= 5;
-					send (mySocket, posPlaque, 1, 0);*/
+					direction = 1;
+					send(mySocket,(char *) direction,sizeof(direction), 0 );
 					break;
 				case SDLK_DOWN:
-					/*posPlaque += 5;
-					send posPlaque;*/
+					direction = 2;
+					send(mySocket,(char *) direction,sizeof(direction), 0 );
 					break;
 			}
 		}

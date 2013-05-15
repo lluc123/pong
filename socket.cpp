@@ -12,8 +12,14 @@ typedef int socklen_t;
 
 using namespace std;
 
+struct argsThread
+{
+	SOCKET jsock;
+	joueur *player;
+};
+
 void jeuxPrincipal(SOCKET jsock[2]);
-void receivJoueur1(SOCKET *jsock, joueur *player);
+void* receivJoueur1(void *args);
 //void receivJoueur2();
 
 int main(void)
@@ -125,8 +131,16 @@ void jeuxPrincipal(SOCKET jsock[2])
 	joueur player1(1);	//joueur 1
 	joueur player2(2);	//joueur 2
 	char receive[5];	
+	argsThread threadArgs1;
+	argsThread threadArgs2;
 	pthread_t thread1;
 	pthread_t thread2;
+	threadArgs1.jsock = jsock[0];
+	threadArgs1.player = &player1;
+	threadArgs2.jsock = jsock[1];
+	threadArgs2.player = &player2;
+	pthread_create(&thread1,NULL, receivJoueur1,(void *)&threadArgs1);
+	pthread_create(&thread1,NULL, receivJoueur1,(void *)&threadArgs2);
 	//send(jsock[0],(char *) &coord, sizeof(coord), 0);
 	while(1)
 	{
@@ -155,11 +169,20 @@ void jeuxPrincipal(SOCKET jsock[2])
 	}
 }
 
-void receivJoueur1(SOCKET *jsock, joueur *player)
+void* receivJoueur1(void *args)
 {
-	int receive = -1;
+	argsThread *argument =(argsThread *) args;
+	int receive;
+	int direction;
 	while(1)
 	{
-		recv(*jsock,(char *) receive, sizeof(receive), 0);
+		receive = recv(argument->jsock,(char *) direction, sizeof(direction), 0);
+		if(receive > 0)
+		{
+			if(direction == 1)
+				argument->player->bougerHaut();
+			else
+				argument->player->bougerBas();
+		}
 	}
 }
