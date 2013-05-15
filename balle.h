@@ -1,4 +1,5 @@
 //Position et largeure des objet
+
 struct Rect
 {
 	int x;	//position x
@@ -22,6 +23,9 @@ public:
 	~balle();					//destructeur
 	void respawn();				//Respawn la balle apres le but
 	bool colision(Rect rect);	//Regarde la colision avec un autre objet
+	void move();
+	void changeAngle(Rect palette);
+	void murRebond();
 	//get
 	int getVx();
 	int getVy();
@@ -31,7 +35,6 @@ public:
 	int getW();
 	int getH();
 	Rect getrect();
-	void move();
 	//set
 	void setVx(int vx);
 	void setVy(int vy);
@@ -42,6 +45,8 @@ public:
 	void setH(int h);
 private:
 	Rect _rect;
+	int _angle;
+	int _vitesse;
 	int _vx;
 	int _vy;
 	int _k;		//Multiplicateur de vitesse

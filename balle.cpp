@@ -1,5 +1,6 @@
 #include"balle.h"
-
+#include<cmath>
+#define PI 3.14159265359
 	balle::balle()
 	{
 		setX(400);
@@ -9,6 +10,8 @@
 		setK(2);
 		setVx(3);
 		setVy(0);
+		_angle = 0;
+		_vitesse = 5;
 	}
 	balle::~balle()
 	{
@@ -31,8 +34,35 @@
 	}
 	void balle::move()
 	{
-		_rect.x += _vx*_k;
-		_rect.y += _vy*_k;
+		_vy = (_vitesse * _k)*sin((float )_angle*(PI/180));
+		_vx = (_vitesse * _k)*cos((float )_angle*(PI/180));
+		_rect.x += _vx;
+		_rect.y += _vy;
+	}
+
+	void balle::changeAngle(Rect palette)
+	{
+		int echelle;
+		echelle = 60/palette.h;
+		//Inverse sense
+		_angle = ((_angle - 180)-90)+90;
+		while(_angle < 0)
+		{
+			_angle+=360;
+		}
+		if(_vx > 0)
+			_angle+=((palette.h/2 + palette.y)-(_rect.h/2 + _rect.y))*echelle;
+		else
+			_angle-=((palette.h/2 + palette.y)-(_rect.h/2 + _rect.y))*echelle;
+	}
+
+	void balle::murRebond()
+	{
+		_angle = ((_angle - 270)-180)+180;
+		while(_angle < 0)
+		{
+			_angle+=360;
+		}
 	}
 	//get
 	int balle::getVx()
@@ -102,7 +132,7 @@
 	joueur::joueur(int number)
 	{
 		_rect.w = 10;
-		_rect.h = 50;
+		_rect.h = 60;
 		_rect.y = 275;
 		if(number == 1)
 		{

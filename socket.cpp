@@ -3,6 +3,7 @@
 #include <windows.h>
 #include "balle.h"
 #include <pthread.h>
+#include <cmath>
 
 typedef int socklen_t;
 
@@ -125,46 +126,62 @@ int main(void)
 
 void jeuxPrincipal(SOCKET jsock[2])
 {
+	cout <<"cos " <<cos((float )180)<< endl;
+	cout  <<"sin "<< sin((float )180)<< endl;
 	//CALCUL DE Pong
 	sendInfo coord;	//coord de tout les balle et palette
 	balle pong;		//Balle pong
 	joueur player1(1);	//joueur 1
 	joueur player2(2);	//joueur 2
 	char receive[5];	
-	argsThread threadArgs1;
-	argsThread threadArgs2;
-	pthread_t thread1;
-	pthread_t thread2;
-	threadArgs1.jsock = jsock[0];
+	argsThread threadArgs1;	//argument pour le thread 1
+	argsThread threadArgs2;	//argument pour le thread 2
+	pthread_t thread1;				//Thread 1
+	pthread_t thread2;				//Thread 2
+
+	threadArgs1.jsock = jsock[0];	//Set les argument des thread
 	threadArgs1.player = &player1;
 	threadArgs2.jsock = jsock[1];
 	threadArgs2.player = &player2;
-	pthread_create(&thread1,NULL, receivJoueur1,(void *)&threadArgs1);
+
+	pthread_create(&thread1,NULL, receivJoueur1,(void *)&threadArgs1);	//On creer les thread
 	pthread_create(&thread2,NULL, receivJoueur1,(void *)&threadArgs2);
 	//send(jsock[0],(char *) &coord, sizeof(coord), 0);
+	
 	while(1)
 	{
-		Sleep(50);
-		pong.move();
-		coord.joueur[0] = player1.getrect();
+		Sleep(50);		//sleep
+		pong.move();	//bouge la balle
+		coord.joueur[0] = player1.getrect();	//Set les donner a envoyer
 		coord.joueur[1] = player2.getrect();
 		coord.balle = pong.getrect();
-		send(jsock[1],(char *)&coord, sizeof(coord), 0);
+
+		send(jsock[1],(char *)&coord, sizeof(coord), 0);	//Envoye les donner au 2 joueur
 		send(jsock[0],(char *)&coord, sizeof(coord), 0);
 
 		if(pong.getVx() > 0)	//si il va a droite
 		{
 			if(pong.colision(player2.getrect()))	//colision avec pallette
 			{
-				pong.setVx(-3);
+				pong.changeAngle(player2.getrect());
 			}
 		}
 		else					//si il va a gauche
 		{
 			if(pong.colision(player1.getrect()))	//colision avec pallette
 			{
-				pong.setVx(3);
+				pong.changeAngle(player1.getrect());
 			}
+		}
+		if(pong.getVy() > 0)
+		{
+			if(pong.getY()+pong.getH()>600)
+				pong.murRebond();
+		}
+		else
+		{
+			if(pong.getY()<0)
+				pong.murRebond();
 		}
 	}
 }
