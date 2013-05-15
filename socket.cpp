@@ -134,8 +134,8 @@ void jeuxPrincipal(SOCKET jsock[2])
 	joueur player1(1);	//joueur 1
 	joueur player2(2);	//joueur 2
 	char receive[5];	
-	argsThread threadArgs1;	//argument pour le thread 1
-	argsThread threadArgs2;	//argument pour le thread 2
+	argsThread threadArgs1;			//argument pour le thread 1
+	argsThread threadArgs2;			//argument pour le thread 2
 	pthread_t thread1;				//Thread 1
 	pthread_t thread2;				//Thread 2
 
@@ -155,6 +155,8 @@ void jeuxPrincipal(SOCKET jsock[2])
 		coord.joueur[0] = player1.getrect();	//Set les donner a envoyer
 		coord.joueur[1] = player2.getrect();
 		coord.balle = pong.getrect();
+		/*coord.score[0] = player1.getScore();
+		coord.score[1] = player2.getScore();*/
 
 		send(jsock[1],(char *)&coord, sizeof(coord), 0);	//Envoye les donner au 2 joueur
 		send(jsock[0],(char *)&coord, sizeof(coord), 0);
@@ -176,12 +178,18 @@ void jeuxPrincipal(SOCKET jsock[2])
 		if(pong.getVy() > 0)
 		{
 			if(pong.getY()+pong.getH()>600)
+			{
 				pong.murRebond();
+				pong.setY(600-pong.getH());
+			}
 		}
 		else
 		{
 			if(pong.getY()<0)
+			{
 				pong.murRebond();
+				pong.setY(0);
+			}
 		}
 	}
 }

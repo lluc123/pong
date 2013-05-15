@@ -13,6 +13,7 @@ struct sendInfo
 {
 	Rect joueur[2];
 	Rect balle;
+	//int score[2];
 };
 
 //Objet représentant la balle du jeu pong

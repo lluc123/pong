@@ -45,10 +45,13 @@
 		int echelle;
 		echelle = 60/palette.h;
 		//Inverse sense
-		_angle = ((_angle - 180)-90)+90;
+		_angle = (180-(_angle - 180))+180;
 		while(_angle < 0)
 		{
-			_angle+=360;
+			if(_angle<0)
+				_angle+=360;
+			else if(_angle>360)
+				_angle-=360;
 		}
 		if(_vx > 0)
 			_angle+=((palette.h/2 + palette.y)-(_rect.h/2 + _rect.y))*echelle;
@@ -58,10 +61,13 @@
 
 	void balle::murRebond()
 	{
-		_angle = ((_angle - 270)-180)+180;
+		_angle = (90-(_angle - 180))+90;
 		while(_angle < 0)
 		{
-			_angle+=360;
+			if(_angle<0)
+				_angle+=360;
+			else if(_angle>360)
+				_angle-=360;
 		}
 	}
 	//get
