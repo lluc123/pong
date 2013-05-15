@@ -72,7 +72,7 @@ void initialisationParametres(SDL_Surface *image, SDL_Surface *ecran)
 //Fais la gestion des différents évènements relié au mouvement de souris ou bien encore en appuyant sur les flèches
 void gestionEvenements(SDL_Surface *image, SDL_Surface *ecran, int &mySocket)
 {
-	int direction;
+	char direction;
 	bool continuer = true;
 	SDL_Event event;
 	int posPlaque;
@@ -103,12 +103,12 @@ void gestionEvenements(SDL_Surface *image, SDL_Surface *ecran, int &mySocket)
 					continuer = 0;
 					break;
 				case SDLK_UP:
-					direction = 1;
-					send(mySocket,(char *) direction,sizeof(direction), 0 );
+					direction = 'h';
+					send(mySocket,&direction,sizeof(direction), 0 );
 					break;
 				case SDLK_DOWN:
-					direction = 2;
-					send(mySocket,(char *) direction,sizeof(direction), 0 );
+					direction = 'd';
+					send(mySocket,&direction,sizeof(direction), 0 );
 					break;
 			}
 		}
@@ -216,7 +216,7 @@ int connexionServeur(int &mySocket, WSAData &wsaData)
 	fflush(stdin);
 	cout << message;
 	fflush(stdin);
-	getchar();
+	//getchar();
 	return mySocket;
 }
 /*
@@ -231,7 +231,7 @@ void receive(int mySocket, SDL_Surface *ecran)
 	//recois
 	sendInfo recois;
 	char allo[5] = "Pass";
-	send(mySocket,allo,sizeof(allo), 0);
+	//send(mySocket,allo,sizeof(allo), 0);
 	//recevoir les infos de la balle et des plaquettes
 	int totalrecu = recv(mySocket, (char *) &recois, sizeof(recois), 0);
 	if(totalrecu > 0)

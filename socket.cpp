@@ -20,7 +20,6 @@ struct argsThread
 
 void jeuxPrincipal(SOCKET jsock[2]);
 void* receivJoueur1(void *args);
-//void receivJoueur2();
 
 int main(void)
 {
@@ -35,6 +34,7 @@ int main(void)
 	/************************************
 	*			Start le serveur		*
 	*************************************/
+
     SOCKADDR_IN sin;	//address du serveur
     SOCKET sock;		//socket du serveur
     int recsize = sizeof sin;
@@ -140,7 +140,7 @@ void jeuxPrincipal(SOCKET jsock[2])
 	threadArgs2.jsock = jsock[1];
 	threadArgs2.player = &player2;
 	pthread_create(&thread1,NULL, receivJoueur1,(void *)&threadArgs1);
-	pthread_create(&thread1,NULL, receivJoueur1,(void *)&threadArgs2);
+	pthread_create(&thread2,NULL, receivJoueur1,(void *)&threadArgs2);
 	//send(jsock[0],(char *) &coord, sizeof(coord), 0);
 	while(1)
 	{
@@ -173,13 +173,13 @@ void* receivJoueur1(void *args)
 {
 	argsThread *argument =(argsThread *) args;
 	int receive;
-	int direction;
+	char direction = 'a';
 	while(1)
 	{
-		receive = recv(argument->jsock,(char *) direction, sizeof(direction), 0);
+		receive = recv(argument->jsock,&direction, sizeof(direction), 0);
 		if(receive > 0)
 		{
-			if(direction == 1)
+			if(direction == 'h')
 				argument->player->bougerHaut();
 			else
 				argument->player->bougerBas();
